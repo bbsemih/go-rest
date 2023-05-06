@@ -6,17 +6,16 @@ import (
 
 	"github.com/bbsemih/gobank/api"
 	db "github.com/bbsemih/gobank/db/sqlc"
+	"github.com/bbsemih/gobank/util"
 	_ "github.com/lib/pq"
 )
 
-const (
-	dbDriver   = "postgres"
-	dbSource   = "postgresql://root:secret@localhost:5432/gobank?sslmode=disable"
-	serverAddr = "0.0.0.0:8080"
-)
-
 func main() {
-	conn, err := sql.Open(dbDriver, dbSource)
+	config, err := util.LoadConfig(".")
+	if err != nil {
+		log.Fatal("Can't load config: ", err)
+	}
+	conn, err := sql.Open(config.DBDriver, config.DBSource)
 	if err != nil {
 		log.Fatal("Cant't establish connection to the Postgres: ", err)
 	}
@@ -24,7 +23,7 @@ func main() {
 	store := db.NewStore(conn)
 	server := api.NewServer(store)
 
-	err = server.Start(serverAddr)
+	err = server.Start(config.ServerAddress)
 	if err != nil {
 		log.Fatal("Can't start the server: ", err)
 	}
