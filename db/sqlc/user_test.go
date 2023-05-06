@@ -50,3 +50,11 @@ func TestGetUser(t *testing.T) {
 	require.WithinDuration(t, user1.PasswordChangedAt, user2.PasswordChangedAt, time.Second)
 	require.WithinDuration(t, user1.CreatedAt, user2.CreatedAt, time.Second)
 }
+
+func TestUpdateUser(t *testing.T) {
+	///TODO
+}
+
+func DeleteUser(t *testing.T) {
+	///todo
+}
