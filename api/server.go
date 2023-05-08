@@ -6,11 +6,11 @@ import (
 )
 
 type Server struct {
-	store  *db.Store
+	store  db.Store
 	router *gin.Engine
 }
 
-func NewServer(store *db.Store) *Server {
+func NewServer(store db.Store) *Server {
 	server := &Server{store: store}
 	r := gin.Default()
 
@@ -19,6 +19,7 @@ func NewServer(store *db.Store) *Server {
 	r.GET("/accounts", server.listAccounts)
 	r.DELETE("/accounts/:id", server.deleteAccount)
 	//update account?
+	//role based access control???
 
 	server.router = r
 	return server
