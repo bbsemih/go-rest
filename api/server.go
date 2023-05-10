@@ -1,20 +1,42 @@
 package api
 
 import (
+	"fmt"
+
 	db "github.com/bbsemih/gobank/db/sqlc"
+	"github.com/bbsemih/gobank/token"
+	"github.com/bbsemih/gobank/util"
 	"github.com/gin-gonic/gin"
 )
 
 type Server struct {
-	store  db.Store
-	router *gin.Engine
+	config     util.Config
+	store      db.Store
+	router     *gin.Engine
+	tokenMaker token.Maker
 }
 
-func NewServer(store db.Store) *Server {
-	server := &Server{store: store}
+func NewServer(config util.Config, store db.Store) (*Server, error) {
+	tokenMaker, err := token.NewPasetoMaker(config.TokenSymmetricKey)
+	if err != nil {
+		return nil, fmt.Errorf("cannot create token maker: %w", err)
+	}
+
+	server := &Server{
+		config:     config,
+		store:      store,
+		tokenMaker: tokenMaker,
+	}
+
+	server.setupRouter()
+	return server, nil
+}
+
+func (server *Server) setupRouter() {
 	r := gin.Default()
 
 	r.POST("/accounts", server.createAccount)
+	r.POST("/accounts/login", server.loginUser)
 	r.GET("/accounts/:id", server.getAccount)
 	r.GET("/accounts", server.listAccounts)
 	r.DELETE("/accounts/:id", server.deleteAccount)
@@ -22,7 +44,6 @@ func NewServer(store db.Store) *Server {
 	//role based access control???
 
 	server.router = r
-	return server
 }
 
 func (server *Server) Start(address string) error {
