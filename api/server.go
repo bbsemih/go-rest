@@ -41,7 +41,7 @@ func (server *Server) setupRouter() {
 	r.GET("/accounts", server.listAccounts)
 	r.DELETE("/accounts/:id", server.deleteAccount)
 	//update account?
-	//role based access control???
+	//role based access control for delete and update???
 
 	server.router = r
 }
