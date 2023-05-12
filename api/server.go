@@ -35,12 +35,15 @@ func NewServer(config util.Config, store db.Store) (*Server, error) {
 func (server *Server) setupRouter() {
 	r := gin.Default()
 
+	r.POST("/users", server.createUser)
+	r.POST("/users/login", server.loginUser)
+
 	r.POST("/accounts", server.createAccount)
-	r.POST("/accounts/login", server.loginUser)
 	r.GET("/accounts/:id", server.getAccount)
 	r.GET("/accounts", server.listAccounts)
 	r.DELETE("/accounts/:id", server.deleteAccount)
-	//update account?
+	//TODO
+	//update account???
 	//role based access control for delete and update???
 
 	server.router = r
