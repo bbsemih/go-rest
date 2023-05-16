@@ -78,8 +78,9 @@ type loginUserRequest struct {
 }
 
 type loginUserResponse struct {
-	AccessToken string       `json:"access_token"`
-	User        userResponse `json:"user"`
+	AccessToken          string       `json:"access_token"`
+	User                 userResponse `json:"user"`
+	AccessTokenExpiresAt time.Time    `json:"access_token_expires_at"`
 }
 
 func (server *Server) loginUser(ctx *gin.Context) {
@@ -105,17 +106,19 @@ func (server *Server) loginUser(ctx *gin.Context) {
 		return
 	}
 
-	accessToken, err := server.tokenMaker.CreateToken(
+	accessToken, accessPayload, err := server.tokenMaker.CreateToken(
 		user.Username,
 		server.config.AccessTokenDuration,
 	)
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, errorResponse(err))
+		return
 	}
 
 	rsp := loginUserResponse{
-		AccessToken: accessToken,
-		User:        newUserResponse(user),
+		AccessToken:          accessToken,
+		AccessTokenExpiresAt: accessPayload.ExpiredAt,
+		User:                 newUserResponse(user),
 	}
 	ctx.JSON(http.StatusOK, rsp)
 }
