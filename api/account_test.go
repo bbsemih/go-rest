@@ -9,7 +9,7 @@ import (
 	"net/http/httptest"
 	"testing"
 
-	mockdb "github.com/bbsemih/gobank/db/mock"
+	mockdb "github.com/bbsemih/gobank/internal/db/mock"
 
 	db "github.com/bbsemih/gobank/db/sqlc"
 	"github.com/bbsemih/gobank/util"

@@ -3,9 +3,9 @@ package api
 import (
 	"fmt"
 
-	db "github.com/bbsemih/gobank/db/sqlc"
-	"github.com/bbsemih/gobank/token"
-	"github.com/bbsemih/gobank/util"
+	db "github.com/bbsemih/gobank/internal/db/sqlc"
+	"github.com/bbsemih/gobank/pkg/token"
+	"github.com/bbsemih/gobank/pkg/util"
 	"github.com/gin-gonic/gin"
 )
 

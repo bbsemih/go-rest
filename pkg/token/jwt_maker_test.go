@@ -4,7 +4,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/bbsemih/gobank/util"
+	"github.com/bbsemih/gobank/pkg/util"
 	"github.com/dgrijalva/jwt-go"
 	"github.com/stretchr/testify/require"
 )

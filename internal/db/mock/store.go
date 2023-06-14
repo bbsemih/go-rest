@@ -8,7 +8,7 @@ import (
 	context "context"
 	reflect "reflect"
 
-	db "github.com/bbsemih/gobank/db/sqlc"
+	db "github.com/bbsemih/gobank/internal/db/sqlc"
 	gomock "github.com/golang/mock/gomock"
 )
 

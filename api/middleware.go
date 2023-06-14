@@ -6,7 +6,7 @@ import (
 	"net/http"
 	"strings"
 
-	"github.com/bbsemih/gobank/token"
+	"github.com/bbsemih/gobank/pkg/token"
 	"github.com/gin-gonic/gin"
 )
 

@@ -5,8 +5,8 @@ import (
 	"log"
 
 	"github.com/bbsemih/gobank/api"
-	db "github.com/bbsemih/gobank/db/sqlc"
-	"github.com/bbsemih/gobank/util"
+	"github.com/bbsemih/gobank/pkg"
+	"github.com/bbsemih/gobank/pkg/util"
 	_ "github.com/lib/pq"
 )
 
@@ -20,7 +20,7 @@ func main() {
 		log.Fatal("Cant't establish connection to the Postgres: ", err)
 	}
 
-	store := db.NewStore(conn)
+	store := pkg.NewStore(conn)
 	server, err := api.NewServer(config, store)
 	if err != nil {
 		log.Fatal("Can't create server: ", err)

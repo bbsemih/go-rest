@@ -7,7 +7,7 @@ import (
 	"net/http"
 	"strconv"
 
-	db "github.com/bbsemih/gobank/db/sqlc"
+	db "github.com/bbsemih/gobank/internal/db/sqlc"
 	"github.com/gin-gonic/gin"
 	"github.com/lib/pq"
 )
