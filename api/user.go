@@ -5,8 +5,8 @@ import (
 	"net/http"
 	"time"
 
-	db "github.com/bbsemih/gobank/db/sqlc"
-	"github.com/bbsemih/gobank/util"
+	db "github.com/bbsemih/gobank/internal/db/sqlc"
+	"github.com/bbsemih/gobank/pkg/util"
 	"github.com/gin-gonic/gin"
 	"github.com/lib/pq"
 )

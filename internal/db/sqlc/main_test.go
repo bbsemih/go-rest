@@ -6,7 +6,7 @@ import (
 	"os"
 	"testing"
 
-	"github.com/bbsemih/gobank/util"
+	"github.com/bbsemih/gobank/pkg/util"
 	_ "github.com/lib/pq"
 )
 
