@@ -1,19 +1,22 @@
 package api
 
 import (
+	"context"
 	"fmt"
 
 	db "github.com/bbsemih/gobank/internal/db/sqlc"
 	"github.com/bbsemih/gobank/pkg/token"
 	"github.com/bbsemih/gobank/pkg/util"
 	"github.com/gin-gonic/gin"
+	"github.com/redis/go-redis/v9"
 )
 
 type Server struct {
-	config     util.Config
-	store      db.Store
-	router     *gin.Engine
-	tokenMaker token.Maker
+	config      util.Config
+	store       db.Store
+	router      *gin.Engine
+	tokenMaker  token.Maker
+	redisClient *redis.Client
 }
 
 func NewServer(config util.Config, store db.Store) (*Server, error) {
@@ -22,10 +25,22 @@ func NewServer(config util.Config, store db.Store) (*Server, error) {
 		return nil, fmt.Errorf("cannot create token maker: %w", err)
 	}
 
+	redisClient := redis.NewClient(&redis.Options{
+		Addr:     config.RedisAddress,
+		Password: config.RedisPassword,
+		DB:       config.RedisDB,
+	})
+
+	_, err = redisClient.Ping(context.Background()).Result()
+	if err != nil {
+		return nil, fmt.Errorf("failed to connect to Redis: %w", err)
+	}
+
 	server := &Server{
-		config:     config,
-		store:      store,
-		tokenMaker: tokenMaker,
+		config:      config,
+		store:       store,
+		tokenMaker:  tokenMaker,
+		redisClient: redisClient,
 	}
 
 	server.setupRouter()

@@ -1,7 +1,9 @@
 package api
 
 import (
+	"context"
 	"database/sql"
+	"encoding/json"
 	"net/http"
 	"time"
 
@@ -9,6 +11,7 @@ import (
 	"github.com/bbsemih/gobank/pkg/util"
 	"github.com/gin-gonic/gin"
 	"github.com/lib/pq"
+	"github.com/redis/go-redis/v9"
 )
 
 type createUserRequest struct {
@@ -121,4 +124,17 @@ func (server *Server) loginUser(ctx *gin.Context) {
 		User:                 newUserResponse(user),
 	}
 	ctx.JSON(http.StatusOK, rsp)
+}
+
+func (server *Server) getUserFromRedis(ctx context.Context, username string) (db.User, error) {
+	result, err := server.redisClient.Get(ctx, username).Result()
+	if err != nil {
+		if err == redis.Nil {
+			return db.User{}, sql.ErrNoRows
+		}
+		return db.User{}, err
+	}
+	var user db.User
+	err = json.Unmarshal([]byte(result), &user)
+	return user, nil
 }
