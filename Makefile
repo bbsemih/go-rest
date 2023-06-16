@@ -26,9 +26,6 @@ test:
 	go test -v -cover ./...
 
 server:
-	go run main.go
-
-mock:
-	mockgen --build_flags=--mod=mod -package mockdb -destination db/mock/store.go github.com/bbsemih/gobank/db/sqlc Store
+	go run ./cmd/main.go
 
 .PHONY: postgres createdb dropdb migrateup migratedown sqlc test migrateup1 migratedown1 server mock
