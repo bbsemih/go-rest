@@ -34,4 +34,7 @@ proto:
     --go-grpc_out=pb --go-grpc_opt=paths=source_relative \
     proto/*.proto
 
-.PHONY: postgres createdb dropdb migrateup migratedown sqlc test migrateup1 migratedown1 server proto
+evans:
+	evans --host localhost --port 9000 -r repl
+
+.PHONY: postgres createdb dropdb migrateup migratedown sqlc test migrateup1 migratedown1 server proto evans
