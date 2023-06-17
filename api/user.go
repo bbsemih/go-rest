@@ -126,6 +126,7 @@ func (server *Server) loginUser(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, rsp)
 }
 
+// todo
 func (server *Server) getUserFromRedis(ctx context.Context, username string) (db.User, error) {
 	result, err := server.redisClient.Get(ctx, username).Result()
 	if err != nil {
