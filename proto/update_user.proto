@@ -1,0 +1,18 @@
+syntax = "proto3";
+
+package pb;
+
+import "user.proto";
+
+option go_package = "github.com/bbsemih/gobank/pb";
+
+message UpdateUserRequest {
+    string username = 1;
+    string full_name = 2;
+    string password = 3;
+    string email = 4;
+}
+
+message UpdateUserResponse {
+    User user = 1;
+}
