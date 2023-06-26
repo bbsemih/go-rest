@@ -4,8 +4,10 @@ gobank is a banking project written in Golang that allows you to create and mana
 
 ## Features
 
+* Serve both gRPC and HTTP requests by using grpc-gateway
 * Create and manage bank accounts
 * Record balance changes for each account
+* Structured logs for both gRPC and HTTP by using zerolog
 * Perform money transfers between two accounts
 * RESTful HTTP APIs
 * Store account information and transaction history in Postgres.
@@ -14,7 +16,8 @@ gobank is a banking project written in Golang that allows you to create and mana
 
 ## TODO
 
-* gRPC Implementation
+* RabbitMQ
+* Redis
 * Chat Service
 
 
