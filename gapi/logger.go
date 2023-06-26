@@ -39,3 +39,9 @@ func GrpcLogger(
 
 	return result, err
 }
+
+/*
+func HttpLogger(handler http.Handler) http.Handler {
+	return
+}
+*/

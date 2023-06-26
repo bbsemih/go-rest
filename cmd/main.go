@@ -1,9 +1,13 @@
 package main
 
 import (
+	"context"
 	"database/sql"
 	"net"
+	"net/http"
 	"os"
+
+	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
 
 	"github.com/bbsemih/gobank/api"
 	"github.com/bbsemih/gobank/gapi"
@@ -33,6 +37,7 @@ func main() {
 	}
 
 	store := db.NewStore(conn)
+	go runGatewayServer(config, store)
 	runGrpcServer(config, store)
 }
 
@@ -67,5 +72,33 @@ func runGinServer(config util.Config, store db.Store) {
 	err = server.Start(config.HTTPServerAddress)
 	if err != nil {
 		log.Fatal().Err(err).Msg("Can't start the server!")
+	}
+}
+
+func runGatewayServer(config util.Config, store db.Store) {
+	server, err := gapi.NewServer(config, store)
+	if err != nil {
+		log.Fatal().Err(err).Msg("Cannot start the server!")
+	}
+
+	grpcMux := runtime.NewServeMux()
+	ctx, cancel := context.WithCancel(context.Background())
+	defer cancel()
+	err = pb.RegisterGoBankHandlerServer(ctx, grpcMux, server)
+	if err != nil {
+		log.Fatal().Err(err).Msg("cannot register handle server!")
+	}
+
+	mux := http.NewServeMux()
+	mux.Handle("/", grpcMux)
+
+	listener, err := net.Listen("tcp", config.HTTPServerAddress)
+	if err != nil {
+		log.Fatal().Err(err).Msg("cannot create listener")
+	}
+	log.Info().Msgf("HTTP gateway server started at port: %s", listener.Addr().String())
+	err = http.Serve(listener, mux)
+	if err != nil {
+		log.Fatal().Err(err).Msg("cannot start HTTP gateway server!")
 	}
 }
