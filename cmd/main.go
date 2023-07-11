@@ -7,7 +7,10 @@ import (
 	"net/http"
 	"os"
 
+	_ "github.com/bbsemih/gobank/doc/statik"
+
 	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
+	"github.com/rakyll/statik/fs"
 
 	"github.com/bbsemih/gobank/api"
 	"github.com/bbsemih/gobank/gapi"
@@ -91,6 +94,13 @@ func runGatewayServer(config util.Config, store db.Store) {
 
 	mux := http.NewServeMux()
 	mux.Handle("/", grpcMux)
+
+	statikFs, err := fs.New()
+	if err != nil {
+		log.Fatal().Err(err).Msg("cannot create statik fs")
+	}
+	swaggerHandler := http.StripPrefix("/swagger/", http.FileServer(statikFs))
+	mux.Handle("/swagger/", swaggerHandler)
 
 	listener, err := net.Listen("tcp", config.HTTPServerAddress)
 	if err != nil {

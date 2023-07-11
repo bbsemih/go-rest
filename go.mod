@@ -11,6 +11,7 @@ require (
 	github.com/jordan-wright/email v4.0.1-0.20210109023952-943e75fe5223+incompatible
 	github.com/lib/pq v1.10.9
 	github.com/o1egl/paseto v1.0.0
+	github.com/rakyll/statik v0.1.7
 	github.com/redis/go-redis/v9 v9.0.5
 	github.com/rs/zerolog v1.29.1
 	github.com/spf13/viper v1.15.0
@@ -18,7 +19,6 @@ require (
 	golang.org/x/crypto v0.8.0
 	google.golang.org/genproto/googleapis/api v0.0.0-20230530153820-e85fd2cbaebc
 	google.golang.org/grpc v1.55.0
-	google.golang.org/grpc/cmd/protoc-gen-go-grpc v1.3.0
 	google.golang.org/protobuf v1.30.0
 )
 
@@ -36,7 +36,6 @@ require (
 	github.com/go-playground/universal-translator v0.18.1 // indirect
 	github.com/go-playground/validator/v10 v10.13.0 // indirect
 	github.com/goccy/go-json v0.10.2 // indirect
-	github.com/golang/glog v1.1.0 // indirect
 	github.com/golang/protobuf v1.5.3 // indirect
 	github.com/hashicorp/hcl v1.0.0 // indirect
 	github.com/json-iterator/go v1.1.12 // indirect
