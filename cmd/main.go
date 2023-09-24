@@ -15,6 +15,7 @@ import (
 	"github.com/bbsemih/gobank/api"
 	"github.com/bbsemih/gobank/gapi"
 	db "github.com/bbsemih/gobank/internal/db/sqlc"
+	logger "github.com/bbsemih/gobank/internal/logger"
 	"github.com/bbsemih/gobank/pb"
 	"github.com/bbsemih/gobank/pkg/util"
 	_ "github.com/lib/pq"
@@ -50,7 +51,7 @@ func runGrpcServer(config util.Config, store db.Store) {
 		log.Fatal().Err(err).Msg("Cannot start the server!")
 	}
 
-	grpcLogger := grpc.UnaryInterceptor(gapi.GrpcLogger)
+	grpcLogger := grpc.UnaryInterceptor(logger.GrpcLogger)
 	grpcServer := grpc.NewServer(grpcLogger)
 	pb.RegisterGoBankServer(grpcServer, server)
 	reflection.Register(grpcServer) // provides information about publicly-accessible gRPC services on a gRPC server
@@ -107,7 +108,7 @@ func runGatewayServer(config util.Config, store db.Store) {
 		log.Fatal().Err(err).Msg("cannot create listener")
 	}
 	log.Info().Msgf("HTTP gateway server started at port: %s", listener.Addr().String())
-	handler := gapi.HttpLogger(mux)
+	handler := logger.HttpLogger(mux)
 	err = http.Serve(listener, handler)
 	if err != nil {
 		log.Fatal().Err(err).Msg("cannot start HTTP gateway server!")
