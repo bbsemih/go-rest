@@ -2,7 +2,6 @@ package main
 
 import (
 	"context"
-	"database/sql"
 	"net"
 	"net/http"
 	"os"
@@ -18,6 +17,8 @@ import (
 	logger "github.com/bbsemih/gobank/internal/logger"
 	"github.com/bbsemih/gobank/pb"
 	"github.com/bbsemih/gobank/pkg/util"
+	_ "github.com/jackc/pgx/v5"
+	"github.com/jackc/pgx/v5/pgxpool"
 	_ "github.com/lib/pq"
 	"github.com/rs/zerolog"
 	"github.com/rs/zerolog/log"
@@ -35,12 +36,12 @@ func main() {
 		log.Logger = log.Output(zerolog.ConsoleWriter{Out: os.Stderr})
 	}
 
-	conn, err := sql.Open(config.DBDriver, config.DBSource)
+	connPool, err := pgxpool.New(context.Background(), config.DBSource)
 	if err != nil {
 		log.Fatal().Err(err).Msg("Cant't establish connection to the Postgres!")
 	}
 
-	store := db.NewStore(conn)
+	store := db.NewStore(connPool)
 	go runGatewayServer(config, store)
 	runGrpcServer(config, store)
 }

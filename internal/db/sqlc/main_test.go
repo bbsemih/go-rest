@@ -1,29 +1,29 @@
 package db
 
 import (
-	"database/sql"
+	"context"
 	"log"
 	"os"
 	"testing"
 
 	"github.com/bbsemih/gobank/pkg/util"
+	"github.com/jackc/pgx/v5/pgxpool"
 	_ "github.com/lib/pq"
 )
 
-var testQueries *Queries
-var testDB *sql.DB
+var testStore Store
 
 func TestMain(m *testing.M) {
 	config, err := util.LoadConfig("../..")
 	if err != nil {
 		log.Fatal("Can't load config:", err)
 	}
-	testDB, err = sql.Open(config.DBDriver, config.DBSource)
+
+	connPool, err := pgxpool.New(context.Background(), config.DBSource)
 	if err != nil {
 		log.Fatal("Can't establish connection to the Postgres:", err)
 	}
 
-	testQueries = New(testDB)
-
+	testStore = NewStore(connPool)
 	os.Exit(m.Run())
 }
