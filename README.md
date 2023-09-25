@@ -19,6 +19,6 @@ gobank is a banking project written in Golang that allows you to create and mana
 * Email Verification Service with AWS SES
 * RabbitMQ
 * Redis for caching and pub-sub
-* Chat Service
+* Chat Service with WebSockets
 
 
