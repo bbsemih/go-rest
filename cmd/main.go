@@ -47,7 +47,7 @@ func main() {
 func runGrpcServer(config util.Config, store db.Store) {
 	server, err := gapi.NewServer(config, store)
 	if err != nil {
-		log.Fatal().Err(err).Msg("Cannot start the server!")
+		log.Fatal().Err(err).Msg("Cannot start the gRPC server!")
 	}
 
 	grpcLogger := grpc.UnaryInterceptor(logger.GrpcLogger)
