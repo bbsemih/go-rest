@@ -36,7 +36,7 @@ func main() {
 
 	connPool, err := pgxpool.New(context.Background(), config.DBSource)
 	if err != nil {
-		log.Fatal().Err(err).Msg("Cant't establish connection to the Postgres!")
+		log.Fatal().Err(err).Msg(`Can't establish connection to the Postgres!`)
 	}
 
 	store := db.NewStore(connPool)
