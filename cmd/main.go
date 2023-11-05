@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	"github.com/bbsemih/gobank/pkg/s3"
 	"net"
 	"net/http"
 	"os"
@@ -42,6 +43,7 @@ func main() {
 	store := db.NewStore(connPool)
 	go runGatewayServer(config, store)
 	runGrpcServer(config, store)
+	s3.InitS3(config.AWSBucketName, config.AWSRegion)
 }
 
 func runGrpcServer(config util.Config, store db.Store) {
