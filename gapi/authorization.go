@@ -3,9 +3,10 @@ package gapi
 import (
 	"context"
 	"fmt"
+	"strings"
+
 	"github.com/bbsemih/gobank/pkg/token"
 	"google.golang.org/grpc/metadata"
-	"strings"
 )
 
 const (

@@ -1,4 +1,4 @@
-package gapi
+package logger
 
 import (
 	"context"
@@ -25,7 +25,6 @@ func GrpcLogger(
 	if st, ok := status.FromError(err); ok {
 		statusCode = st.Code()
 	}
-
 	logger := log.Info()
 	if err != nil {
 		logger = log.Error().Err(err)
