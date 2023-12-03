@@ -3,6 +3,7 @@ package db
 import (
 	"context"
 
+	queue "github.com/bbsemih/gobank/internal/rabbitmq"
 	"github.com/jackc/pgx/v5/pgxpool"
 )
 
@@ -15,6 +16,7 @@ type Store interface {
 type SQLStore struct {
 	connPool *pgxpool.Pool
 	*Queries
+	rabbitMQ *queue.RabbitMQClient
 }
 
 func NewStore(connPool *pgxpool.Pool) Store {
@@ -24,7 +26,6 @@ func NewStore(connPool *pgxpool.Pool) Store {
 	}
 }
 
-// Contains the input parameters we will use in transaction
 type TransferTxParams struct {
 	FromAccountId int64 `json:"from_account_id"`
 	ToAccountID   int64 `json:"to_account_id"`
@@ -39,7 +40,7 @@ type TransferTxResult struct {
 	ToEntry     Entry    `json:"to_entry"`
 }
 
-// This performs a money from one account to another
+// TransferTx performs money from one account to another
 // creates a transfer record, add account entries and update accounts' balance
 // within a single db transaction
 func (store *SQLStore) TransferTx(ctx context.Context, arg TransferTxParams) (TransferTxResult, error) {
@@ -87,6 +88,11 @@ func (store *SQLStore) TransferTx(ctx context.Context, arg TransferTxParams) (Tr
 			Amount: arg.Amount,
 		})
 
+		if err != nil {
+			return err
+		}
+
+		err = store.rabbitMQ.Publish(ctx, result.Transfer.ID)
 		if err != nil {
 			return err
 		}

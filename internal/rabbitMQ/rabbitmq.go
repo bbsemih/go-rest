@@ -1,17 +1,19 @@
-package rabbitmq
+package rabbitMQ
 
 import (
 	"context"
 	"errors"
-	amqp "github.com/rabbitmq/amqp091-go"
+	"fmt"
 	"log"
+
+	amqp "github.com/rabbitmq/amqp091-go"
 )
 
 const (
 	QueueName = "transaction_queue"
 )
 
-type rabbitMQClient struct {
+type RabbitMQClient struct {
 	conn              *amqp.Connection
 	ch                *amqp.Channel
 	connString        string
@@ -24,8 +26,8 @@ func failOnError(err error, msg string) {
 	}
 }
 
-func newRabbitMQClient(connString string) (*rabbitMQClient, error) {
-	c := &rabbitMQClient{}
+func NewRabbitMQClient(connString string) (*RabbitMQClient, error) {
+	c := &RabbitMQClient{}
 	var err error
 
 	c.conn, err = amqp.Dial(connString)
@@ -43,7 +45,7 @@ func newRabbitMQClient(connString string) (*rabbitMQClient, error) {
 	return c, err
 }
 
-func (c *rabbitMQClient) ConsumeByTransactionID(ctx context.Context, txID string) ([]byte, error) {
+func (c *RabbitMQClient) ConsumeByTransactionID(ctx context.Context, txID string) ([]byte, error) {
 	for msg := range c.transactionStatus {
 		if msg.MessageId == txID {
 			_ = msg.Ack(false)
@@ -53,9 +55,27 @@ func (c *rabbitMQClient) ConsumeByTransactionID(ctx context.Context, txID string
 	return nil, errors.New("failed to get transaction status on channel")
 }
 
-//TODO: Consume, publish
+func (c *RabbitMQClient) Publish(ctx context.Context, txID int64) error {
+	err := c.ch.Publish(
+		"",
+		QueueName,
+		true,
+		false,
+		amqp.Publishing{
+			MessageId: fmt.Sprintf("%d", txID),
+			Body:      []byte(fmt.Sprintf("Transaction %d completed", txID)),
+		})
+	failOnError(err, "Failed to publish a message")
 
-func (c *rabbitMQClient) configureQueue() error {
+	return err
+}
+
+func (c *RabbitMQClient) Close() {
+	c.ch.Close()
+	c.conn.Close()
+}
+
+func (c *RabbitMQClient) configureQueue() error {
 	q, err := c.ch.QueueDeclare(
 		QueueName,
 		true,
@@ -64,7 +84,7 @@ func (c *rabbitMQClient) configureQueue() error {
 		false,
 		nil,
 	)
-	failOnError(err, "Failed to declare a rabbitmq")
+	failOnError(err, "Failed to declare a rabbitMQ")
 
 	err = c.ch.Qos(
 		1, // the server will deliver that many messages to consumers before acks are received

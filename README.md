@@ -10,14 +10,6 @@ gobank is a banking project written in Golang that allows you to create and mana
 * Structured logs for both gRPC and HTTP by using zerolog
 * Perform money transfers between two accounts
 * RESTful HTTP APIs
-* Store account information and transaction history in Postgres.
-* Docker for local development
-* GitHub Actions for automated unit tests
-
-## TODO
-
-* Email Verification Service with AWS SES
-* RabbitMQ
-* Chat Service with WebSockets
-
-
+* Store account information and transaction history in Postgres
+* GitHub Actions for automated unit tests.
+* RabbitMQ for transactions

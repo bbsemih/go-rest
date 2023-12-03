@@ -19,6 +19,7 @@ type Config struct {
 	RedisPassword        string        `mapstructure:"REDIS_PASSWORD"`
 	AWSRegion            string        `mapstructure:"AWS_REGION"`
 	AWSBucketName        string        `mapstructure:"AWS_BUCKET_NAME"`
+	RabbitMQURI          string        `mapstructure:"RABBITMQ_URI"`
 }
 
 func LoadConfig(path string) (config Config, err error) {

@@ -16,6 +16,7 @@ import (
 	"github.com/bbsemih/gobank/gapi"
 	db "github.com/bbsemih/gobank/internal/db/sqlc"
 	logger "github.com/bbsemih/gobank/internal/logger"
+	_rabbitmq "github.com/bbsemih/gobank/internal/rabbitmq"
 	"github.com/bbsemih/gobank/pb"
 	"github.com/bbsemih/gobank/pkg/util"
 	"github.com/jackc/pgx/v5/pgxpool"
@@ -41,6 +42,12 @@ func main() {
 	}
 
 	store := db.NewStore(connPool)
+	r, err := _rabbitmq.NewRabbitMQClient(config.RabbitMQURI)
+	if err != nil {
+		log.Fatal().Err(err).Msg("Cannot create rabbitMQ client!")
+	}
+	defer r.Close()
+
 	go runGatewayServer(config, store)
 	runGrpcServer(config, store)
 	s3.InitS3(config.AWSBucketName, config.AWSRegion)
